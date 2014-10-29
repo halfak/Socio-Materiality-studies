@@ -18,8 +18,8 @@ FROM (
     (
         SELECT
             rev_user,
-            LOWER(SUBSTRING_INDEX(
-                SUBSTRING_INDEX(page_title,"/",1), "_", -1)) AS wikiproject,
+            LOWER(SUBSTRING(SUBSTRING_INDEX(page_title ,"/",1), 13))
+                    AS wikiproject,
             MIN(rev_id) AS rev_id
         FROM revision
         INNER JOIN page ON
@@ -31,12 +31,12 @@ FROM (
             page_title LIKE "WikiProject_%"
         GROUP BY
             rev_user,
-            SUBSTRING_INDEX(SUBSTRING_INDEX(page_title,"/",1), "_", -1)
+            wikiproject
         UNION ALL
         SELECT
             ar_user AS rev_user,
-            LOWER(SUBSTRING_INDEX(
-                SUBSTRING_INDEX(ar_title,"/",1), "_", -1)) AS wikiproject,
+            LOWER(SUBSTRING(SUBSTRING_INDEX(ar_title ,"/",1), 13))
+                    AS wikiproject,
             MIN(ar_rev_id) AS rev_id
         FROM archive
         WHERE
@@ -46,7 +46,7 @@ FROM (
             ar_title LIKE "WikiProject_%"
         GROUP BY
             ar_user,
-            SUBSTRING_INDEX(SUBSTRING_INDEX(ar_title,"/",1), "_", -1)
+            wikiproject
     ) AS split_firsts
     GROUP BY rev_user, wikiproject
 ) AS firsts
