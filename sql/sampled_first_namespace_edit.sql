@@ -23,8 +23,7 @@ FROM (
             rev_page = page_id
         WHERE
             rev_user IN (SELECT user_id FROM staging.events_sampled_user
-                         WHERE wiki = DATABASE()) AND
-            page_title RLIKE "(/|^)[Ss]andbox"
+                         WHERE wiki = DATABASE())
         GROUP BY rev_user, page_namespace
         UNION ALL
         SELECT
